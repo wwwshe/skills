@@ -132,10 +132,15 @@ struct UserView: View {
 ```swift
 struct UserView: View {
     @State private var viewModel: UserViewModel
+    let userId: String
 
     var body: some View {
         // @Observable이면 @State만으로 자동 구독
-        // ...
+        Group {
+            if viewModel.isLoading { ProgressView() }
+            else if let user = viewModel.user { Text(user.name) }
+            else if let error = viewModel.error { Text(error.localizedDescription) }
+        }
         .task { await viewModel.loadUser(id: userId) }
     }
 }
@@ -146,11 +151,18 @@ struct UserView: View {
 ```swift
 final class UserViewController: UIViewController {
     private let viewModel: UserViewModel
+    private let userId: String
+
+    init(viewModel: UserViewModel, userId: String) {
+        self.viewModel = viewModel
+        self.userId = userId
+        super.init(nibName: nil, bundle: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModel()
-        viewModel.loadUser(id: userId)
+        Task { await viewModel.loadUser(id: userId) }
     }
 
     private func bindViewModel() {
