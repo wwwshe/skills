@@ -73,11 +73,6 @@ async def list_items(
 - 반환/인자: `def f(x: str) -> int`, `list[str]`, `str | None` (3.10+)
 - 타입 별칭: `type UserId = UUID`
 
-## 날짜·시간
-
-- 타임존: `ZoneInfo("Asia/Seoul")`, `datetime.now(KST)`
-- 문자열: `strftime("%Y-%m-%d")`, `strptime(s, "%Y-%m-%d")`
-
 ## 기타
 
 - docstring/주석: 한국어 사용
