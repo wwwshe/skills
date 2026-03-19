@@ -41,7 +41,7 @@ API/DTO 모델. JSON 직렬화, freezed 등 사용 가능.
 ```dart
 /// data/repositories/some_repository.dart
 class SomeRepository {
-  SomeRepository({SomeApiClient? client}) : _client = client ?? SomeApiClient();
+  SomeRepository(this._client);
 
   final SomeApiClient _client;
 
@@ -49,6 +49,12 @@ class SomeRepository {
     return await _client.fetch(input);
   }
 }
+
+// Provider에서 주입
+final someRepositoryProvider = Provider<SomeRepository>((ref) {
+  final client = ref.watch(someApiClientProvider);
+  return SomeRepository(client);
+});
 ```
 
 ---
