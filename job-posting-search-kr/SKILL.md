@@ -6,8 +6,6 @@ argument-hint: "[직무키워드] [경력?] [지역?]"
 
 # 한국 채용공고 검색
 
-> **[절대 규칙] 회사명·포지션명은 API/HTML 응답 원문을 글자 하나도 바꾸지 않고 그대로 복사한다. 추측·교정·변형 절대 금지. 확신이 없으면 원문 그대로 출력.**
-
 사용자가 채용공고 검색을 요청하면 원티드·점핏·링크드인 세 곳을 동시에 조회해 결과를 합쳐서 보여준다.
 
 ## 입력 파싱
@@ -24,58 +22,55 @@ argument-hint: "[직무키워드] [경력?] [지역?]"
 
 ## API 호출
 
-**세 플랫폼을 병렬로 호출한다.**
+**Bash tool + curl + jq 로 호출한다. 회사명·포지션명은 jq가 추출한 값을 그대로 사용한다.**
+
+세 플랫폼 호출은 병렬로 실행한다 (단일 Bash 블록에서 `&` + `wait` 사용).
 
 ### 1. 원티드 (wanted.co.kr)
 
-```
-GET https://www.wanted.co.kr/api/v4/jobs
-  ?country=kr
-  &query={키워드}
-  &job_sort=job.latest_order
-  &years={경력}
-  &locations={지역}
-  &limit=10
-  &offset=0
+#### 공고 목록 조회
+
+```bash
+curl -s "https://www.wanted.co.kr/api/v4/jobs?country=kr&query={키워드}&job_sort=job.latest_order&years={경력}&locations={지역}&limit=10&offset=0" \
+  -H "User-Agent: Mozilla/5.0" \
+  | jq '.data[] | {id, position, company_name: .company.name, company_id: .company.id, location: .address.location, due_time, annual_from, annual_to}'
 ```
 
-응답 구조 (모든 텍스트 필드는 API 응답 값을 **변경 없이 그대로** 사용할 것. 절대 추측·수정·변형 금지):
-- `data[].position` — 포지션명
-- `data[].company.name` — 회사명
-- `data[].company.id` — 회사 ID (인원수 조회에 사용)
-- `data[].address.location` — 지역
-- `data[].id` — 공고 ID → URL: `https://www.wanted.co.kr/wd/{id}`
-- `data[].due_time` — 마감일 (null이면 상시)
-- `data[].annual_from` / `annual_to` — 연봉 (**천만원 단위**, 예: 5 = 5천만원, 10 = 1억). `annual_to`가 100이면 "협의"로 표시. 출력 시 `{annual_from}천만~{annual_to}천만원` 형식으로 변환
+추출 필드:
+- `id` → URL: `https://www.wanted.co.kr/wd/{id}`
+- `position` — 포지션명
+- `company_name` — 회사명
+- `company_id` — 인원수 조회에 사용
+- `location` — 지역
+- `due_time` — 마감일 (null이면 상시)
+- `annual_from` / `annual_to` — 연봉 (**천만원 단위**). `annual_to`가 100이면 "협의". 출력: `{annual_from}천만~{annual_to}천만원`
 
-#### 원티드 인원수 조회 (공고 목록 수집 후 병렬로 호출)
+#### 인원수 조회 (공고별 병렬 호출)
 
+```bash
+curl -s "https://www.wanted.co.kr/api/v4/companies/{company_id}" \
+  -H "User-Agent: Mozilla/5.0" \
+  | jq '.company.company_tags[] | select(.kind_title == "COMPANY_MANAGEMENT" and (.title | test("명$"))) | .title'
 ```
-GET https://www.wanted.co.kr/api/v4/companies/{company_id}
-```
 
-응답의 `company.company_tags[]` 중 `kind_title == "COMPANY_MANAGEMENT"`이고 title이 `*명` 패턴인 항목에서 인원수 범위를 추출한다.
-예: `"title": "51~300명"` → "51~300명"
-인원수 태그가 없으면 "미공개"로 표시한다.
+결과가 없으면 "미공개"로 표시한다.
 
 ### 2. 점핏 (jumpit.co.kr)
 
-```
-GET https://jumpit-api.saramin.co.kr/api/positions
-  ?keyword={키워드}
-  &page=1
-  &sort=latest
+```bash
+curl -s "https://jumpit-api.saramin.co.kr/api/positions?keyword={키워드}&page=1&sort=latest" \
+  -H "User-Agent: Mozilla/5.0" \
+  | jq '.result | {totalCount, positions: [.positions[] | {id, title, companyName, locations, closedAt, minCareer, maxCareer, techStacks}]}'
 ```
 
-응답 구조 (모든 텍스트 필드는 API 응답 값을 **변경 없이 그대로** 사용할 것. 절대 추측·수정·변형 금지):
-- `result.positions[].title` — 포지션명 (**HTML 태그 포함될 수 있음** → 반드시 strip 처리)
-- `result.positions[].companyName` — 회사명
-- `result.positions[].locations[]` — 지역 (문자열 배열)
-- `result.positions[].id` — 공고 ID → URL: `https://www.jumpit.co.kr/position/{id}`
-- `result.positions[].closedAt` — 마감일
-- `result.positions[].minCareer` / `maxCareer` — 경력 (년)
-- `result.positions[].techStacks[]` — 기술스택 (**문자열 배열**, `.name` 없음)
-- `result.totalCount` — 전체 공고 수
+추출 필드:
+- `title` — 포지션명 (HTML 태그 포함될 수 있음 → `sed 's/<[^>]*>//g'` 또는 jq `gsub` 으로 strip)
+- `companyName` — 회사명
+- `locations[]` — 지역 (문자열 배열)
+- `id` → URL: `https://www.jumpit.co.kr/position/{id}`
+- `closedAt` — 마감일
+- `minCareer` / `maxCareer` — 경력 (년)
+- `techStacks[]` — 기술스택 (문자열 배열)
 
 **클라이언트 사이드 필터링 필수**: 점핏 API의 키워드 매칭이 넓어서 무관한 공고가 섞임.
 응답을 받은 뒤 아래 조건으로 필터링한다:
@@ -85,16 +80,14 @@ GET https://jumpit-api.saramin.co.kr/api/positions
 
 ### 3. 링크드인 (linkedin.com)
 
-링크드인은 JSON API가 없으므로 guest search HTML을 WebFetch로 가져와 파싱한다.
+링크드인은 JSON API가 없으므로 curl로 guest search HTML을 가져와 파싱한다.
 
-```
-GET https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search
-  ?keywords={키워드 URL인코딩}
-  &location=South+Korea
-  &start=0
+```bash
+curl -s "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={키워드 URL인코딩}&location=South+Korea&start=0" \
+  -H "User-Agent: Mozilla/5.0"
 ```
 
-응답 HTML에서 정규식으로 추출:
+응답 HTML에서 추출 (grep/sed 활용):
 - 포지션명: `base-search-card__title">` 태그 내 텍스트 (공백 trim)
 - 회사명: `base-search-card__subtitle` 태그 내 `<a>` 텍스트 (공백 trim)
 - 지역: `job-search-card__location">` 태그 내 텍스트 (공백 trim)
