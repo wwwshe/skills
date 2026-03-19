@@ -6,6 +6,8 @@ argument-hint: "[직무키워드] [경력?] [지역?]"
 
 # 한국 채용공고 검색
 
+> **[절대 규칙] 회사명·포지션명은 API/HTML 응답 원문을 글자 하나도 바꾸지 않고 그대로 복사한다. 추측·교정·변형 절대 금지. 확신이 없으면 원문 그대로 출력.**
+
 사용자가 채용공고 검색을 요청하면 원티드·점핏·링크드인 세 곳을 동시에 조회해 결과를 합쳐서 보여준다.
 
 ## 입력 파싱
@@ -65,7 +67,7 @@ GET https://jumpit-api.saramin.co.kr/api/positions
   &sort=latest
 ```
 
-응답 구조:
+응답 구조 (모든 텍스트 필드는 API 응답 값을 **변경 없이 그대로** 사용할 것. 절대 추측·수정·변형 금지):
 - `result.positions[].title` — 포지션명 (**HTML 태그 포함될 수 있음** → 반드시 strip 처리)
 - `result.positions[].companyName` — 회사명
 - `result.positions[].locations[]` — 지역 (문자열 배열)
