@@ -37,7 +37,7 @@ GET https://www.wanted.co.kr/api/v4/jobs
   &offset=0
 ```
 
-응답 구조:
+응답 구조 (모든 텍스트 필드는 API 응답 값을 **변경 없이 그대로** 사용할 것. 절대 추측·수정·변형 금지):
 - `data[].position` — 포지션명
 - `data[].company.name` — 회사명
 - `data[].company.id` — 회사 ID (인원수 조회에 사용)
