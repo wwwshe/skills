@@ -6,9 +6,9 @@ description: FastAPI 백엔드 패턴 안내. 라우터·의존성·JWT 인증·
 # FastAPI 백엔드
 
 ## 프로젝트 구조
-- 라우터: `app/api/v1/` (기능별 모듈), `include_router(router, prefix="/v1/app")`
-- 의존성: `app/api/deps.py` (`get_current_user`, `get_db` 등)
-- 모델: `app/models/`, 스키마: `app/schemas/`, 서비스: `app/services/`
+- 라우터: 기능별 모듈 분리 (예: `app/api/v1/`), `include_router(router, prefix="/v1/app")`
+- 의존성: 별도 모듈로 분리 (예: `app/api/deps.py`) — `get_current_user`, `get_db` 등
+- 모델/스키마/서비스: 레이어별 분리 (예: `app/models/`, `app/schemas/`, `app/services/`)
 
 ## 라우터
 
