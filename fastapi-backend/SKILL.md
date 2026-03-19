@@ -1,9 +1,9 @@
 ---
-name: python
-description: Python 비동기·타입힌트·Pydantic·SQLAlchemy 2 패턴 안내. Use when writing Python code, async/await, type hints, Pydantic schemas, or SQLAlchemy queries.
+name: fastapi-backend
+description: FastAPI + SQLAlchemy 2 + Pydantic v2 백엔드 패턴 안내. async/await, PostgreSQL(asyncpg), pydantic_settings, 타입힌트 작성 시 사용.
 ---
 
-# Python
+# FastAPI 백엔드
 
 ## 비동기
 - `async def`, `await` 사용. I/O 바운드 작업은 비동기로.
