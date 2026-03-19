@@ -41,9 +41,9 @@ async def list_items(
 
 ## 에러 응답
 
-- `HTTPException` → 전역 핸들러로 `{ "error_code": "...", "message": "..." }` JSON 변환
-- `detail`에 `error_code` 문자열 사용 (예: `user_not_found`, `invalid_token`)
-- 4xx/5xx 모두 `error_code` + `message` 형태로 통일
+- `HTTPException` → 전역 핸들러로 일관된 JSON 포맷 변환
+- `detail`에 클라이언트 분기용 문자열 사용 (예: `user_not_found`, `invalid_token`)
+- 예: `{ "error_code": "...", "message": "..." }` 형태로 통일
 
 ## 설정·미들웨어
 
