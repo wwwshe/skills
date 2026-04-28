@@ -14,11 +14,12 @@ npx skills add https://github.com/wwwshe/skills/tree/main/data-go-kr-search
 npx skills add wwwshe/skills
 ```
 
-## 사전 준비: 서비스키 발급
+## 사전 준비: 활용신청 및 서비스키 발급
 
 1. [data.go.kr](https://www.data.go.kr) 로그인
-2. 마이페이지 > 인증키 발급 > **일반 인증키** 발급
-3. `~/.claude/settings.json`에 환경변수 추가
+2. 이 스킬이 호출하는 **[공공데이터포털 검색 서비스](https://www.data.go.kr/data/15112888/openapi.do)** 상세 페이지에서 **활용신청**을 완료한다. 
+3. 마이페이지 > 인증키 발급 > **일반 인증키** 발급
+4. `~/.claude/settings.json`에 환경변수 추가
 
 ```json
 {
