@@ -18,6 +18,7 @@ npx skills add https://github.com/wwwshe/skills/tree/main/<skill-name>
 |------|------|
 | [job-posting-search-kr](./job-posting-search-kr) | 원티드·점핏·링크드인 한국 채용공고 실시간 검색 |
 | [data-go-kr-search](./data-go-kr-search) | 공공데이터포털 API/데이터셋 실시간 검색 |
+| [anti-hallucination-research](./anti-hallucination-research) | 검색/조사형 AI의 환각 억제를 위한 검증 워크플로우 |
 | [naver-shopping-search](./naver-shopping-search) | 네이버 쇼핑 공식 검색 API 실시간 상품 검색 |
 | [flutter-clean-architecture](./flutter-clean-architecture) | Flutter Clean Architecture 스캐폴딩 |
 | [kotlin-clean-architecture](./kotlin-clean-architecture) | Kotlin Clean Architecture 스캐폴딩 |
