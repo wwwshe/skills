@@ -23,4 +23,7 @@ npx skills add https://github.com/wwwshe/skills/tree/main/<skill-name>
 | [flutter-clean-architecture](./flutter-clean-architecture) | Flutter Clean Architecture 스캐폴딩 |
 | [kotlin-clean-architecture](./kotlin-clean-architecture) | Kotlin Clean Architecture 스캐폴딩 |
 | [swift-mvvm](./swift-mvvm) | Swift MVVM 패턴 스캐폴딩 |
+| [swiftui-mvvm](./swiftui-mvvm) | SwiftUI MVVM 상태/생명주기/비동기 패턴 가이드 |
+| [swift-concurrency-mvvm](./swift-concurrency-mvvm) | UIKit MVVM에서 Swift Concurrency 경계/패턴 가이드 |
+| [swift-combine-uikit-mvvm](./swift-combine-uikit-mvvm) | UIKit MVVM에서 Combine 바인딩 패턴 가이드 |
 | [fastapi-backend](./fastapi-backend) | FastAPI + SQLAlchemy 2 + Pydantic v2 백엔드 |

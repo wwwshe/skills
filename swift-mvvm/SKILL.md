@@ -221,3 +221,14 @@ final class DIContainer {
 - ViewModel: `XxxViewModel`
 - Service: `XxxServiceProtocol` (프로토콜), `XxxService` (구현체)
 - View: `XxxView` (SwiftUI), `XxxViewController` (UIKit)
+
+---
+
+## 관련 skill (라우팅)
+
+- UIKit + Combine 바인딩 심화: `swift-combine-uikit-mvvm`
+- UIKit + Swift Concurrency 경계/Task 심화: `swift-concurrency-mvvm`
+- SwiftUI 상태/생명주기/비동기 심화: `swiftui-mvvm`
+
+`swift-mvvm`은 공통 골격(계층/DI/네이밍) 중심으로 사용하고,
+플랫폼별 구현 디테일은 위 전문 스킬로 분기한다.
