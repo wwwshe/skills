@@ -2,6 +2,11 @@
 
 Claude Code용 커스텀 스킬 모음.
 
+## Git 규칙
+
+- GitFlow 및 커밋 메시지 규칙: [`GIT_RULES.md`](./GIT_RULES.md)
+- 로컬 훅 활성화: `bash scripts/install-hooks.sh`
+
 ## 설치
 
 ```bash
